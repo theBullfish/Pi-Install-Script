@@ -27,7 +27,6 @@ echo "Enabling and starting resolvconf service..."
 sudo systemctl enable resolvconf
 sudo systemctl start resolvconf
 
-
 # Check for existing WireGuard keys
 if [ ! -f ~/privatekey ] || [ ! -f ~/publickey ]; then
     echo "Generating WireGuard keys..."
