@@ -20,27 +20,49 @@ sudo apt-get install tightvncserver -y
 echo "Installing Wireguard..."
 sudo apt install wireguard -y
 
-# Generate WireGuard keys
-wg genkey | tee privatekey | wg pubkey > publickey
+echo "Installing resolvconf..."
+sudo apt-get install resolvconf -y
+
+echo "Enabling and starting resolvconf service..."
+sudo systemctl enable resolvconf
+sudo systemctl start resolvconf
+
+
+# Check for existing WireGuard keys
+if [ ! -f ~/privatekey ] || [ ! -f ~/publickey ]; then
+    echo "Generating WireGuard keys..."
+    wg genkey | tee ~/privatekey | wg pubkey > ~/publickey
+else
+    echo "WireGuard keys already exist, using existing keys..."
+fi
 
 # Read the public key into a variable
-WG_PUBLIC_KEY=$(cat publickey)
+WG_PUBLIC_KEY=$(cat ~/privatekey | wg pubkey)
 
-# Send the public key in JSON format to your server and store the response
-RESPONSE=$(curl -X POST -H "Content-Type: application/json" -d "{\"public_key\": \"$WG_PUBLIC_KEY\"}" http://68.190.110.57:44111/get_ip)
+# Check if WireGuard configuration already exists
+if [ ! -f /etc/wireguard/wg0.conf ]; then
+    echo "Fetching IP address from the server and configuring WireGuard..."
 
-# Extract the IP address from the JSON response
-IP_ADDRESS=$(echo $RESPONSE | jq -r '.ip_address')
+    # Send the public key in JSON format to your server and store the response
+    RESPONSE=$(curl -X POST -H "Content-Type: application/json" -d "{\"public_key\": \"$WG_PUBLIC_KEY\"}" http://68.190.110.57:44111/get_ip)
 
-# Configure WireGuard with the obtained IP address
-echo -e "[Interface]\nAddress = $IP_ADDRESS/32\nPrivateKey = $(cat privatekey)\nDNS = 1.1.1.1\n\n[Peer]\nPublicKey = TTj19WgC9WWze9VfeOzo3fqsktZISF39XLoCsH7MFgc=\nEndpoint = 68.190.110.57:44112\nAllowedIPs = 10.0.0.1/32\nPersistentKeepalive = 25" | sudo tee /etc/wireguard/wg0.conf
+    # Extract the IP address from the JSON response
+    IP_ADDRESS=$(echo $RESPONSE | jq -r '.ip_address')
 
-# Set correct permissions for the WireGuard configuration file
-sudo chmod 600 /etc/wireguard/wg0.conf
+    # Configure WireGuard with the obtained IP address
+    echo -e "[Interface]\nAddress = $IP_ADDRESS/32\nPrivateKey = $(cat ~/privatekey)\nDNS = 1.1.1.1\n\n[Peer]\nPublicKey = TTj19WgC9WWze9VfeOzo3fqsktZISF39XLoCsH7MFgc=\nEndpoint = 68.190.110.57:44112\nAllowedIPs = 10.0.0.1/32\nPersistentKeepalive = 25" | sudo tee /etc/wireguard/wg0.conf
 
-# Enable and start WireGuard
-sudo systemctl enable wg-quick@wg0
-sudo systemctl start wg-quick@wg0
+    # Set correct permissions for the WireGuard configuration file
+    sudo chmod 600 /etc/wireguard/wg0.conf
+
+    # Enable and start WireGuard
+    sudo systemctl enable wg-quick@wg0
+    sudo systemctl start wg-quick@wg0
+
+else
+    echo "WireGuard is already configured."
+fi
+
 
 # Configure TightVNCServer to start on boot (add commands here if not already configured)
 
