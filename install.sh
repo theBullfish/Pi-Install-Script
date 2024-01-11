@@ -14,8 +14,29 @@ sudo apt-get upgrade -y
 echo "Install JQ"
 sudo apt-get install jq -y
 
+sudo apt-get install expect -y
+
+# Create the expect script to set the VNC password
+cat << EOF > set_vnc_password.exp
+#!/usr/bin/expect
+spawn vncpasswd
+expect "Password:"
+send "Santana@\r"
+expect "Verify:"
+send "Santana@\r"
+expect "Would you like to enter a view-only password (y/n)?"
+send "n\r"
+expect eof
+EOF
+
+# Make the expect script executable
+chmod +x set_vnc_password.exp
+
 echo "Installing TightVNCServer..."
-sudo apt-get install tightvncserver -y
+sudo apt-get install tightvncserver expect -y
+
+# Now run the expect script
+./set_vnc_password.exp
 
 echo "Starting TightVNCServer..."
 tightvncserver :1
