@@ -17,6 +17,12 @@ sudo apt-get install jq -y
 echo "Installing TightVNCServer..."
 sudo apt-get install tightvncserver -y
 
+echo "Starting TightVNCServer..."
+tightvncserver :1
+
+# Configure TightVNCServer to start on boot
+(crontab -l 2>/dev/null; echo "@reboot tightvncserver :1") | crontab -
+
 echo "Installing Wireguard..."
 sudo apt install wireguard -y
 
