@@ -79,24 +79,43 @@ git clone https://github.com/theBullfish/PiInstallStuff.git
 # Navigate to the repository directory
 cd PiInstallStuff
 
-# Install Python dependencies if there's a requirements.txt in the 'Pi Browser Collector' directory
+# Install Python3 venv module
+echo "Installing Python3 venv..."
+sudo apt-get install python3-venv -y
+
+# Check if the requirements file exists in the 'Pi Browser Collector' directory
 if [ -f "Pi Browser Collector/requirements.txt" ]; then
+    echo "Setting up Python virtual environment..."
+
+    # Navigate to the 'Pi Browser Collector' directory
+    cd "Pi Browser Collector"
+
+    # Create a virtual environment
+    python3 -m venv venv
+
+    # Activate the virtual environment
+    source venv/bin/activate
+
+    # Install Python dependencies
     echo "Installing Python dependencies..."
-    pip3 install -r "Pi Browser Collector/requirements.txt"
+    pip install -r requirements.txt
+
+    # Deactivate the virtual environment
+    deactivate
+
+    # Create a systemd service file for the Python app
+    echo "Creating a systemd service for the Python app..."
+    echo -e "[Unit]\nDescription=My Python App\nAfter=network.target\n\n[Service]\nExecStart=$(pwd)/venv/bin/python3 $(pwd)/app.py\nWorkingDirectory=$(pwd)\nRestart=always\nUser=pi\nGroup=pi\nEnvironment=\"PATH=/bin:/usr/local/bin\"\nEnvironment=\"PYTHONUNBUFFERED=1\"\n\n[Install]\nWantedBy=multi-user.target" | sudo tee /etc/systemd/system/myapp.service
+
+    # Enable and start the service
+    echo "Enabling and starting the systemd service..."
+    sudo systemctl enable myapp.service
+    sudo systemctl start myapp.service
+
+    # Return to the original directory
+    cd ../..
+else
+    echo "No Python requirements found. Skipping Python setup."
 fi
 
-# Navigate to the 'Pi Browser Collector' directory
-cd "Pi Browser Collector"
-
-# Create a systemd service file for the Python app
-echo "Creating a systemd service for the Python app..."
-echo -e "[Unit]\nDescription=My Python App\nAfter=network.target\n\n[Service]\nExecStart=/usr/bin/python3 $(pwd)/app.py\nWorkingDirectory=$(pwd)\nRestart=always\nUser=pi\nGroup=pi\nEnvironment=\"PATH=/bin:/usr/local/bin\"\nEnvironment=\"PYTHONUNBUFFERED=1\"\n\n[Install]\nWantedBy=multi-user.target" | sudo tee /etc/systemd/system/myapp.service
-
-# Enable and start the service
-echo "Enabling and starting the systemd service..."
-sudo systemctl enable myapp.service
-sudo systemctl start myapp.service
-
-# Return to the original directory
-cd ../..
 
