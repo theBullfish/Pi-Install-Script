@@ -68,9 +68,6 @@ else
     echo "WireGuard is already configured."
 fi
 
-
-# Configure TightVNCServer to start on boot (add commands here if not already configured)
-
 # Enable SSH
 sudo systemctl enable ssh
 sudo systemctl start ssh
