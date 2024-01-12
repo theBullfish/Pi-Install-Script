@@ -106,6 +106,9 @@ cd PiInstallStuff
 echo "Installing Python3 venv..."
 sudo apt-get install python3-venv -y
 
+echo "Installing libffi-dev..."
+sudo apt-get install libffi-dev -y
+
 # Check if the requirements file exists in the 'Pi Browser Collector' directory
 if [ -f "Pi Browser Collector/requirements.txt" ]; then
     echo "Setting up Python virtual environment..."
