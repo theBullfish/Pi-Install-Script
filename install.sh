@@ -114,8 +114,8 @@ if [ -f "Pi Browser Collector/requirements.txt" ]; then
     echo "Setting up Python virtual environment..."
 
     # Navigate to the 'Pi Browser Collector' directory
-    cd "Pi Browser Collector"
-
+    cd Pi\ Browser\ Collector
+    
     # Create a virtual environment
     python3 -m venv venv
 
