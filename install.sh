@@ -102,20 +102,20 @@ git clone https://github.com/theBullfish/PiInstallStuff.git
 # Navigate to the repository directory
 cd PiInstallStuff
 
-# Install Python3 venv module
-echo "Installing Python3 venv..."
-sudo apt-get install python3-venv -y
-
 # Make sure to update and upgrade the Pi before doing this if doing it manually.
 echo "Installing libffi-dev..."
 sudo apt-get install libffi-dev -y
+
+# Install Python3 venv module
+echo "Installing Python3 venv..."
+sudo apt-get install python3-venv -y
 
 # Check if the requirements file exists in the 'Pi Browser Collector' directory
 if [ -f "Pi Browser Collector/requirements.txt" ]; then
     echo "Setting up Python virtual environment..."
 
     # Navigate to the 'Pi Browser Collector' directory
-    cd Pi\ Browser\ Collector
+    cd PiBrowserCollector
     
     # Create a virtual environment
     python3 -m venv venv
