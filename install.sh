@@ -132,7 +132,7 @@ if [ -f "Pi Browser Collector/requirements.txt" ]; then
 
     # Create a systemd service file for the Python app
     echo "Creating a systemd service for the Python app..."
-    echo -e "[Unit]\nDescription=My Python App\nAfter=network.target\n\n[Service]\nExecStart=$(pwd)/venv/bin/python3 $(pwd)/app.py\nWorkingDirectory=$(pwd)\nRestart=always\nUser=pi\nGroup=pi\nEnvironment=\"PATH=/bin:/usr/local/bin\"\nEnvironment=\"PYTHONUNBUFFERED=1\"\n\n[Install]\nWantedBy=multi-user.target" | sudo tee /etc/systemd/system/myapp.service
+    echo -e "[Unit]\nDescription=My Python App\nAfter=network.target\n\n[Service]\nExecStart=$(pwd)/venv/bin/python3 $(pwd)/app.py\nWorkingDirectory=$(pwd)\nRestart=always\nUser=adminbrad\nGroup=adminbrad\nEnvironment=\"PATH=/bin:/usr/local/bin\"\nEnvironment=\"PYTHONUNBUFFERED=1\"\n\n[Install]\nWantedBy=multi-user.target" | sudo tee /etc/systemd/system/myapp.service
 
     # Enable and start the service
     echo "Enabling and starting the systemd service..."
