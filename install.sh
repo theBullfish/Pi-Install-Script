@@ -106,6 +106,7 @@ cd PiInstallStuff
 echo "Installing Python3 venv..."
 sudo apt-get install python3-venv -y
 
+# Make sure to update and upgrade the Pi before doing this if doing it manually.
 echo "Installing libffi-dev..."
 sudo apt-get install libffi-dev -y
 
