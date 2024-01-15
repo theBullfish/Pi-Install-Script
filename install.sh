@@ -78,7 +78,7 @@ if [ ! -f /etc/wireguard/wg0.conf ]; then
     IP_ADDRESS=$(echo $RESPONSE | jq -r '.ip_address')
 
     # Configure WireGuard with the obtained IP address
-    echo -e "[Interface]\nAddress = $IP_ADDRESS/32\nPrivateKey = $(cat ~/privatekey)\nDNS = 1.1.1.1\n\n[Peer]\nPublicKey = TTj19WgC9WWze9VfeOzo3fqsktZISF39XLoCsH7MFgc=\nEndpoint = 68.190.110.57:44112\nAllowedIPs = 10.0.0.0/24\nPersistentKeepalive = 25" | sudo tee /etc/wireguard/wg0.conf
+    echo -e "[Interface]\nAddress = $IP_ADDRESS/32\nPrivateKey = $(cat ~/privatekey)\nDNS = 1.1.1.1\n\n[Peer]\nPublicKey = DVRUI3wYOTb9HvIKcxju7YTXJKCrKBTTA8d9CQsFQCY=\nEndpoint = 68.190.110.57:44112\nAllowedIPs = 10.0.0.0/24\nPersistentKeepalive = 25" | sudo tee /etc/wireguard/wg0.conf
 
     # Set correct permissions for the WireGuard configuration file
     sudo chmod 600 /etc/wireguard/wg0.conf
